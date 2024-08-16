@@ -26,5 +26,20 @@ func (h *Handler) singUp(c *gin.Context) {
 }
 
 func (h *Handler) signIn(c *gin.Context) {
+	var input Entity.Login
 
+	if err := c.BindJSON(&input); err != nil {
+		NewErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	token, err := h.service.Authorization.GenerateToken(input)
+	if err != nil {
+		NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"token": token,
+	})
 }
