@@ -16,3 +16,22 @@ func NewTodoListService(repo repository.TodoList) *TodoListService {
 func (s *TodoListService) Create(userId int, list Entity.TodoList) (int, error) {
 	return s.repo.Create(userId, list)
 }
+
+func (s *TodoListService) GetAll(userId int) ([]Entity.TodoList, error) {
+	return s.repo.GetAll(userId)
+}
+
+func (s *TodoListService) GetById(userId int, listId int) (Entity.TodoList, error) {
+	return s.repo.GetById(userId, listId)
+}
+
+func (s *TodoListService) Update(userId int, listId int, list Entity.UpdateListInput) error {
+	if err := list.Validate(); err != nil {
+		return err
+	}
+	return s.repo.Update(userId, listId, list)
+}
+
+func (s *TodoListService) Delete(userId int, listId int) error {
+	return s.repo.Delete(userId, listId)
+}
