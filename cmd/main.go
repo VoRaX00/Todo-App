@@ -1,11 +1,14 @@
 package main
 
 import (
+	"context"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"os"
+	"os/signal"
+	"syscall"
 	"todoApp"
 	"todoApp/pkg/handler"
 	"todoApp/pkg/repository"
@@ -30,6 +33,7 @@ func main() {
 		DBName:   viper.GetString("db.dbname"),
 		SSLMode:  viper.GetString("db.sslmode"),
 	})
+
 	if err != nil {
 		logrus.Fatalf("Error initializing DB: %s", err.Error())
 	}
@@ -39,8 +43,25 @@ func main() {
 	handlers := handler.NewHandler(services)
 
 	server := new(todoApp.Server)
-	if err := server.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
-		logrus.Fatalf("Error with running app: %s", err.Error())
+	go func() {
+		if err := server.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
+			logrus.Fatalf("Error with running app: %s", err.Error())
+		}
+	}()
+
+	logrus.Info("Server initialized")
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+
+	logrus.Info("Shutting down server...")
+	if err := server.Shutdown(context.Background()); err != nil {
+		logrus.Errorf("Error shutting down server: %s", err.Error())
+	}
+
+	if err := db.Close(); err != nil {
+		logrus.Errorf("Error closing DB: %s", err.Error())
 	}
 }
 
