@@ -3,17 +3,22 @@ package repository
 import "todoApp/Entity"
 
 type Authorization interface {
-	CreateUser(user Entity.User) (int, error)
-	GetUser(login Entity.Login) (Entity.User, error)
+	Create(user Entity.User) (int, error)
+	Get(login Entity.Login) (Entity.User, error)
 }
 
 type TodoList interface {
 	Create(userId int, list Entity.TodoList) (int, error)
 	GetAll(userId int) ([]Entity.TodoList, error)
-	GetById(userId int, listId int) (Entity.TodoList, error)
-	Update(userId int, listId int, list Entity.UpdateListInput) error
-	Delete(userId int, listId int) error
+	GetById(userId, listId int) (Entity.TodoList, error)
+	Update(userId, listId int, list Entity.UpdateList) error
+	Delete(userId, listId int) error
 }
 
 type TodoItem interface {
+	Create(listId int, item Entity.TodoItem) (int, error)
+	GetAll(userId, listId int) ([]Entity.TodoItem, error)
+	GetById(userId, itemId int) (Entity.TodoItem, error)
+	Update(userId, itemId int, item Entity.UpdateItem) error
+	Delete(userId, itemId int) error
 }

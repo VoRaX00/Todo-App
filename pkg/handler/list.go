@@ -84,7 +84,7 @@ func (h *Handler) updateList(c *gin.Context) {
 		return
 	}
 
-	var input Entity.UpdateListInput
+	var input Entity.UpdateList
 	if err := c.BindJSON(&input); err != nil {
 		NewErrorResponse(c, http.StatusBadRequest, err.Error())
 		return

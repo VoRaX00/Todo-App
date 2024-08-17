@@ -14,7 +14,7 @@ func NewAuthPostgres(db *sqlx.DB) *AuthPostgres {
 	return &AuthPostgres{db: db}
 }
 
-func (r *AuthPostgres) CreateUser(user Entity.User) (int, error) {
+func (r *AuthPostgres) Create(user Entity.User) (int, error) {
 	var id int
 	query := fmt.Sprintf("INSERT INTO %s (name, username, password_hash) VALUES ($1, $2, $3) RETURNING id", userTable)
 
@@ -26,7 +26,7 @@ func (r *AuthPostgres) CreateUser(user Entity.User) (int, error) {
 	return id, nil
 }
 
-func (r *AuthPostgres) GetUser(login Entity.Login) (Entity.User, error) {
+func (r *AuthPostgres) Get(login Entity.Login) (Entity.User, error) {
 	var user Entity.User
 	query := fmt.Sprintf("SELECT id,name FROM %s WHERE username=$1 AND password_hash=$2", userTable)
 	err := r.db.Get(&user, query, login.Username, login.Password)

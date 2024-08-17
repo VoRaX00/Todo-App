@@ -14,7 +14,7 @@ func (h *Handler) singUp(c *gin.Context) {
 		return
 	}
 
-	id, err := h.service.Authorization.CreateUser(input)
+	id, err := h.service.Authorization.Create(input)
 	if err != nil {
 		NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return

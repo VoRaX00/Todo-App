@@ -21,17 +21,17 @@ func (s *TodoListService) GetAll(userId int) ([]Entity.TodoList, error) {
 	return s.repo.GetAll(userId)
 }
 
-func (s *TodoListService) GetById(userId int, listId int) (Entity.TodoList, error) {
+func (s *TodoListService) GetById(userId, listId int) (Entity.TodoList, error) {
 	return s.repo.GetById(userId, listId)
 }
 
-func (s *TodoListService) Update(userId int, listId int, list Entity.UpdateListInput) error {
+func (s *TodoListService) Update(userId, listId int, list Entity.UpdateList) error {
 	if err := list.Validate(); err != nil {
 		return err
 	}
 	return s.repo.Update(userId, listId, list)
 }
 
-func (s *TodoListService) Delete(userId int, listId int) error {
+func (s *TodoListService) Delete(userId, listId int) error {
 	return s.repo.Delete(userId, listId)
 }
